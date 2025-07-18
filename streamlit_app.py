@@ -1,9 +1,13 @@
 import streamlit as st
-import joblib
+import cloudpickle
+
+
+
 import pandas as pd
 
 # Load model
-pipe = joblib.load('final_model_pipeline.pkl')
+with open('final_model_pipeline.pkl', 'rb') as f:
+    pipe = cloudpickle.load(f)
 
 
 # Teams and cities (can be reduced if model was trained on fewer categories)
