@@ -11,7 +11,7 @@ except Exception as e:
 
 # Team and city options
 teams = ['Australia', 'India', 'Bangladesh', 'New Zealand', 'South Africa', 'England',
-         'West Indies', 'Afghanistan', 'Pakistan', 'Sri Lanka']
+         'West Indies', 'Pakistan', 'Sri Lanka']
 
 cities = ['Colombo', 'Mirpur', 'Johannesburg', 'Dubai', 'Auckland', 'Cape Town', 'London',
           'Pallekele', 'Barbados', 'Sydney', 'Melbourne', 'Durban', 'St Lucia', 'Wellington',
