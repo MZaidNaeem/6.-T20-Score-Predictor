@@ -42,7 +42,7 @@ col3, col4, col5 = st.columns(3)
 with col3:
     current_score = st.number_input('Current Score', min_value=0)
 with col4:
-    overs = st.number_input('Overs Completed (works for > 5 overs)', min_value=0.0, max_value=20.0, step=0.1)
+    overs = st.number_input('Overs Completed', min_value=5.0, max_value=20.0, step=1.0)
 with col5:
     wickets = st.number_input('Wickets Fallen', min_value=0, max_value=10)
 
