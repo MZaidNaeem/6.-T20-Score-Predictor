@@ -1,42 +1,29 @@
 import streamlit as st
+import pickle
 import pandas as pd
-import joblib
-from sklearn.pipeline import Pipeline
-from sklearn.compose import ColumnTransformer
-from sklearn.preprocessing import OneHotEncoder, StandardScaler
+import numpy as np
 from xgboost import XGBRegressor
 
-# ✅ Redefine transformer and scaler structure manually
-categorical_features = ['batting_team', 'bowling_team', 'city']
-transformer = ColumnTransformer(
-    transformers=[('ohe', OneHotEncoder(drop='first', handle_unknown='ignore'), categorical_features)],
-    remainder='passthrough'
-)
+# Load the trained pipeline
+pipe = pickle.load(open('pipe.pkl', 'rb'))
 
-scaler = StandardScaler(with_mean=False)
-model = joblib.load("xgb_model.pkl")
+# Team and city options
+teams = ['Australia', 'India', 'Bangladesh', 'New Zealand', 'South Africa', 'England',
+         'West Indies', 'Afghanistan', 'Pakistan', 'Sri Lanka']
 
-# ✅ Rebuild pipeline
-pipe = Pipeline(steps=[
-    ('step1', transformer),
-    ('step2', scaler),
-    ('step3', model)
-])
-
-# Teams and cities
-teams = ['Australia', 'India', 'Bangladesh', 'New Zealand', 'South Africa',
-         'England', 'West Indies', 'Afghanistan', 'Pakistan', 'Sri Lanka']
-cities = ['Colombo', 'Mirpur', 'Johannesburg', 'Dubai', 'Auckland', 'Cape Town',
-          'London', 'Pallekele', 'Barbados', 'Sydney', 'Melbourne', 'Durban',
-          'St Lucia', 'Wellington', 'Lauderhill', 'Hamilton', 'Centurion',
-          'Manchester', 'Abu Dhabi', 'Mumbai', 'Nottingham', 'Southampton',
-          'Mount Maunganui', 'Chittagong', 'Kolkata', 'Lahore', 'Delhi',
-          'Nagpur', 'Chandigarh', 'Adelaide', 'Bangalore', 'St Kitts', 'Cardiff',
+cities = ['Colombo', 'Mirpur', 'Johannesburg', 'Dubai', 'Auckland', 'Cape Town', 'London',
+          'Pallekele', 'Barbados', 'Sydney', 'Melbourne', 'Durban', 'St Lucia', 'Wellington',
+          'Lauderhill', 'Hamilton', 'Centurion', 'Manchester', 'Abu Dhabi', 'Mumbai',
+          'Nottingham', 'Southampton', 'Mount Maunganui', 'Chittagong', 'Kolkata', 'Lahore',
+          'Delhi', 'Nagpur', 'Chandigarh', 'Adelaide', 'Bangalore', 'St Kitts', 'Cardiff',
           'Christchurch', 'Trinidad']
 
+# App Title
 st.title('🏏 Cricket Score Predictor')
 
+# Input widgets
 col1, col2 = st.columns(2)
+
 with col1:
     batting_team = st.selectbox('Select Batting Team', sorted(teams))
 with col2:
@@ -45,27 +32,26 @@ with col2:
 city = st.selectbox('Select City', sorted(cities))
 
 col3, col4, col5 = st.columns(3)
+
 with col3:
-    current_score = st.number_input('Current Score', min_value=15)
+    current_score = st.number_input('Current Score', min_value=0)
 with col4:
-    overs = st.number_input('Overs Completed', min_value=5.0, max_value=20.0, step=0.1)
+    overs = st.number_input('Overs Completed (works for > 5 overs)', min_value=0.0, max_value=20.0, step=0.1)
 with col5:
-    wickets = st.number_input('Wickets Fallen', min_value=0, max_value=9)
+    wickets = st.number_input('Wickets Fallen', min_value=0, max_value=10)
 
-last_five = st.number_input('Runs Scored in Last 5 Overs', min_value=15)
+last_five = st.number_input('Runs Scored in Last 5 Overs', min_value=0)
 
-if st.button('Predict Final Score'):
-    if overs < 5:
-        st.warning('⚠️ Prediction works best when overs > 5.')
-    elif bowling_team == batting_team:
-        st.warning('⚠️ Bowling and batting team cannot be the same.')
-    elif overs == 0:
-        st.error("❌ Cannot divide by zero overs.")
+# Prediction
+if st.button('Predict Score'):
+    if overs <= 0:
+        st.error("Overs must be greater than 0 for prediction.")
     else:
-        balls_left = int(120 - (overs * 6))
-        wickets_left = int(10 - wickets)
+        balls_left = 120 - int(overs * 6)
+        wickets_left = 10 - wickets
         crr = current_score / overs
 
+        # DataFrame for prediction
         input_df = pd.DataFrame({
             'batting_team': [batting_team],
             'bowling_team': [bowling_team],
@@ -77,8 +63,6 @@ if st.button('Predict Final Score'):
             'last_five': [last_five]
         })
 
-        try:
-            prediction = pipe.predict(input_df)[0]
-            st.success(f"🏆 Predicted Final Score: {int(prediction)}")
-        except Exception as e:
-            st.error(f"🚫 Prediction failed: {str(e)}")
+        # Make prediction
+        predicted_score = int(pipe.predict(input_df)[0])
+        st.header(f"🏆 Predicted Final Score: {predicted_score}")
