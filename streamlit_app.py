@@ -1,11 +1,17 @@
 import streamlit as st
-import pickle
 import pandas as pd
 import numpy as np
 from xgboost import XGBRegressor
 
 # Load the trained pipeline
-pipe = pickle.load(open('pipe.pkl', 'rb'))
+import pickle
+
+try:
+    with open('pipe.pkl', 'rb') as f:
+        pipe = pickle.load(f)
+except Exception as e:
+    st.error("Failed to load the model.")
+    st.text(str(e))
 
 # Team and city options
 teams = ['Australia', 'India', 'Bangladesh', 'New Zealand', 'South Africa', 'England',
