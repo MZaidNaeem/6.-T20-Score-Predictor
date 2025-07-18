@@ -1,16 +1,21 @@
 import streamlit as st
-import cloudpickle
-
-
-
 import pandas as pd
+import joblib
+from sklearn.pipeline import Pipeline
 
-# Load model
-with open('final_model_pipeline.pkl', 'rb') as f:
-    pipe = cloudpickle.load(f)
+# Load model components
+transformer = joblib.load("transformer.pkl")
+scaler = joblib.load("scaler.pkl")
+model = joblib.load("xgb_model.pkl")
 
+# Reconstruct the pipeline
+pipe = Pipeline(steps=[
+    ('step1', transformer),
+    ('step2', scaler),
+    ('step3', model)
+])
 
-# Teams and cities (can be reduced if model was trained on fewer categories)
+# Teams and cities
 teams = [
     'Australia', 'India', 'Bangladesh', 'New Zealand', 'South Africa',
     'England', 'West Indies', 'Afghanistan', 'Pakistan', 'Sri Lanka'
@@ -48,7 +53,7 @@ with col3:
 with col4:
     overs = st.number_input('Overs Completed', min_value=5.0, max_value=20.0, step=0.1)
 with col5:
-    wickets = st.number_input('Wickets Fallen', min_value=0, max_value=10)
+    wickets = st.number_input('Wickets Fallen', min_value=0, max_value=9)
 
 # Runs in last 5 overs
 last_five = st.number_input('Runs Scored in Last 5 Overs', min_value=15)
