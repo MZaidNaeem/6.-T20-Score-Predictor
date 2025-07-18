@@ -1,5 +1,5 @@
 🏏 Cricket Score Predictor – T20 Final Score Estimator
-![screenshot](gitimg.png)
+![screenshot](gitimg.webp)
 This project is an AI-powered T20 Cricket Score Predictor built using XGBoost and deployed with Streamlit.
 It takes live match statistics such as current score, overs, wickets, and recent run rate, and predicts the final match score in real time — with an accuracy of 93.5% on validation data.
 
