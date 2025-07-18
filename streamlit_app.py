@@ -1,55 +1,49 @@
 import streamlit as st
 import pandas as pd
 import joblib
-
-# ✅ Required for joblib unpickling to work
+from sklearn.pipeline import Pipeline
 from sklearn.compose import ColumnTransformer
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
-from sklearn.pipeline import Pipeline
 from xgboost import XGBRegressor
 
-# 🔁 Load individual components
-transformer = joblib.load("transformer.pkl")
-scaler = joblib.load("scaler.pkl")
+# ✅ Redefine transformer and scaler structure manually
+categorical_features = ['batting_team', 'bowling_team', 'city']
+transformer = ColumnTransformer(
+    transformers=[('ohe', OneHotEncoder(drop='first', handle_unknown='ignore'), categorical_features)],
+    remainder='passthrough'
+)
+
+scaler = StandardScaler(with_mean=False)
 model = joblib.load("xgb_model.pkl")
 
-# 🔧 Reconstruct pipeline
+# ✅ Rebuild pipeline
 pipe = Pipeline(steps=[
     ('step1', transformer),
     ('step2', scaler),
     ('step3', model)
 ])
 
-# 🎯 Team & City options
-teams = [
-    'Australia', 'India', 'Bangladesh', 'New Zealand', 'South Africa',
-    'England', 'West Indies', 'Afghanistan', 'Pakistan', 'Sri Lanka'
-]
+# Teams and cities
+teams = ['Australia', 'India', 'Bangladesh', 'New Zealand', 'South Africa',
+         'England', 'West Indies', 'Afghanistan', 'Pakistan', 'Sri Lanka']
+cities = ['Colombo', 'Mirpur', 'Johannesburg', 'Dubai', 'Auckland', 'Cape Town',
+          'London', 'Pallekele', 'Barbados', 'Sydney', 'Melbourne', 'Durban',
+          'St Lucia', 'Wellington', 'Lauderhill', 'Hamilton', 'Centurion',
+          'Manchester', 'Abu Dhabi', 'Mumbai', 'Nottingham', 'Southampton',
+          'Mount Maunganui', 'Chittagong', 'Kolkata', 'Lahore', 'Delhi',
+          'Nagpur', 'Chandigarh', 'Adelaide', 'Bangalore', 'St Kitts', 'Cardiff',
+          'Christchurch', 'Trinidad']
 
-cities = [
-    'Colombo', 'Mirpur', 'Johannesburg', 'Dubai', 'Auckland', 'Cape Town',
-    'London', 'Pallekele', 'Barbados', 'Sydney', 'Melbourne', 'Durban',
-    'St Lucia', 'Wellington', 'Lauderhill', 'Hamilton', 'Centurion',
-    'Manchester', 'Abu Dhabi', 'Mumbai', 'Nottingham', 'Southampton',
-    'Mount Maunganui', 'Chittagong', 'Kolkata', 'Lahore', 'Delhi', 'Nagpur',
-    'Chandigarh', 'Adelaide', 'Bangalore', 'St Kitts', 'Cardiff',
-    'Christchurch', 'Trinidad'
-]
-
-# 🏏 App Title
 st.title('🏏 Cricket Score Predictor')
 
-# 🧩 Team Selection
 col1, col2 = st.columns(2)
 with col1:
     batting_team = st.selectbox('Select Batting Team', sorted(teams))
 with col2:
     bowling_team = st.selectbox('Select Bowling Team', sorted(teams))
 
-# 🌍 City Selection
 city = st.selectbox('Select City', sorted(cities))
 
-# 🎮 Match Stats
 col3, col4, col5 = st.columns(3)
 with col3:
     current_score = st.number_input('Current Score', min_value=15)
@@ -60,7 +54,6 @@ with col5:
 
 last_five = st.number_input('Runs Scored in Last 5 Overs', min_value=15)
 
-# 🚀 Predict Button
 if st.button('Predict Final Score'):
     if overs < 5:
         st.warning('⚠️ Prediction works best when overs > 5.')
@@ -69,12 +62,10 @@ if st.button('Predict Final Score'):
     elif overs == 0:
         st.error("❌ Cannot divide by zero overs.")
     else:
-        # 🧠 Feature Engineering
         balls_left = int(120 - (overs * 6))
         wickets_left = int(10 - wickets)
         crr = current_score / overs
 
-        # 🧾 Input Format
         input_df = pd.DataFrame({
             'batting_team': [batting_team],
             'bowling_team': [bowling_team],
