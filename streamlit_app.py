@@ -1,21 +1,26 @@
 import streamlit as st
 import pandas as pd
 import joblib
-from sklearn.pipeline import Pipeline
 
-# Load model components
+# ✅ Required for joblib unpickling to work
+from sklearn.compose import ColumnTransformer
+from sklearn.preprocessing import OneHotEncoder, StandardScaler
+from sklearn.pipeline import Pipeline
+from xgboost import XGBRegressor
+
+# 🔁 Load individual components
 transformer = joblib.load("transformer.pkl")
 scaler = joblib.load("scaler.pkl")
 model = joblib.load("xgb_model.pkl")
 
-# Reconstruct the pipeline
+# 🔧 Reconstruct pipeline
 pipe = Pipeline(steps=[
     ('step1', transformer),
     ('step2', scaler),
     ('step3', model)
 ])
 
-# Teams and cities
+# 🎯 Team & City options
 teams = [
     'Australia', 'India', 'Bangladesh', 'New Zealand', 'South Africa',
     'England', 'West Indies', 'Afghanistan', 'Pakistan', 'Sri Lanka'
@@ -31,23 +36,21 @@ cities = [
     'Christchurch', 'Trinidad'
 ]
 
-# App title
+# 🏏 App Title
 st.title('🏏 Cricket Score Predictor')
 
-# Team selection
+# 🧩 Team Selection
 col1, col2 = st.columns(2)
-
 with col1:
     batting_team = st.selectbox('Select Batting Team', sorted(teams))
 with col2:
     bowling_team = st.selectbox('Select Bowling Team', sorted(teams))
 
-# City selection
+# 🌍 City Selection
 city = st.selectbox('Select City', sorted(cities))
 
-# Match input stats
+# 🎮 Match Stats
 col3, col4, col5 = st.columns(3)
-
 with col3:
     current_score = st.number_input('Current Score', min_value=15)
 with col4:
@@ -55,24 +58,23 @@ with col4:
 with col5:
     wickets = st.number_input('Wickets Fallen', min_value=0, max_value=9)
 
-# Runs in last 5 overs
 last_five = st.number_input('Runs Scored in Last 5 Overs', min_value=15)
 
-# Prediction button
+# 🚀 Predict Button
 if st.button('Predict Final Score'):
     if overs < 5:
-        st.warning('⚠️ Prediction works best when over > 5.')
+        st.warning('⚠️ Prediction works best when overs > 5.')
     elif bowling_team == batting_team:
         st.warning('⚠️ Bowling and batting team cannot be the same.')
     elif overs == 0:
         st.error("❌ Cannot divide by zero overs.")
     else:
-        # Feature engineering
+        # 🧠 Feature Engineering
         balls_left = int(120 - (overs * 6))
         wickets_left = int(10 - wickets)
         crr = current_score / overs
 
-        # DataFrame in correct order
+        # 🧾 Input Format
         input_df = pd.DataFrame({
             'batting_team': [batting_team],
             'bowling_team': [bowling_team],
@@ -85,7 +87,7 @@ if st.button('Predict Final Score'):
         })
 
         try:
-            result = pipe.predict(input_df)
-            st.success(f"🏆 Predicted Final Score: {int(result[0])}")
-        except ValueError as e:
-            st.error(f"🚫 Error: {str(e)}")
+            prediction = pipe.predict(input_df)[0]
+            st.success(f"🏆 Predicted Final Score: {int(prediction)}")
+        except Exception as e:
+            st.error(f"🚫 Prediction failed: {str(e)}")
