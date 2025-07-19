@@ -3,7 +3,7 @@
 
 
 🔗 🚀 Live Demo 
-[🔗 Click Here to Try the Live Demo](20scorepredictorbyzaidnaeem.streamlit.app)
+[🔗 Click Here to Try the Live Demo](https://t20scorepredictorbyzaidnaeem.streamlit.app/)
 
 
 ![screenshot](gitimg.webp)
