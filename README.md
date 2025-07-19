@@ -1,7 +1,7 @@
-#🏏 Cricket Score Predictor – T20 Final Score Estimator
+# h1🏏 Cricket Score Predictor – T20 Final Score Estimator
 
-🔗 🚀 Live Demo – 20scorepredictorbyzaidnaeem.streamlit.app
-
+🔗 🚀 Live Demo 
+[🔗 Click Here to Try the Live Demo]( 20scorepredictorbyzaidnaeem.streamlit.app)
 
 
 This project is an AI-powered T20 Cricket Score Predictor built using XGBoost and deployed with Streamlit.
