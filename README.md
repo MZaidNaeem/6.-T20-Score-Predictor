@@ -4,7 +4,7 @@
 [🔗 Click Here to Try the Live Demo]( 20scorepredictorbyzaidnaeem.streamlit.app)
 
 
-[screenshot](gitimg.png)
+[screenshot](gitimg.webp)
 
 
 
