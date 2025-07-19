@@ -1,20 +1,24 @@
 🏏 Cricket Score Predictor – T20 Final Score Estimator
-![screenshot](gitimg.webp)
+🔗 🚀 Live Demo – Click Here to Try the App
+(20scorepredictorbyzaidnaeem.streamlit.app)
+
+
+
 This project is an AI-powered T20 Cricket Score Predictor built using XGBoost and deployed with Streamlit.
 It takes live match statistics such as current score, overs, wickets, and recent run rate, and predicts the final match score in real time — with an accuracy of 93.5% on validation data.
 
 🚀 Features
-Predicts final T20 cricket score using current match inputs.
+🎯 Predicts final T20 cricket score using current match inputs
 
-Achieves 93.5% accuracy on validation set.
+✅ Achieves 93.5% accuracy on validation set
 
-Built using a machine learning pipeline with XGBoost Regressor.
+🧠 Built using a machine learning pipeline with XGBoost Regressor
 
-Preprocessed with OneHotEncoding and feature scaling.
+🧹 Preprocessed with OneHotEncoding and feature scaling
 
-Deployed via Streamlit for a responsive, interactive web UI.
+💻 Deployed via Streamlit for a responsive, interactive web UI
 
-Supports all major international teams and multiple cricket venues.
+🌍 Supports all major international teams and multiple cricket venues
 
 📦 Tech Stack
 Python 🐍
@@ -45,4 +49,4 @@ Wickets Fallen
 Runs in Last 5 Overs
 
 📈 Output
-Predicted Final T20 Score
+🏁 Predicted Final T20 Score
