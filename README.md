@@ -1,4 +1,4 @@
-# h1🏏 Cricket Score Predictor – T20 Final Score Estimator
+# 🏏 Cricket Score Predictor – T20 Final Score Estimator
 
 🔗 🚀 Live Demo 
 [🔗 Click Here to Try the Live Demo]( 20scorepredictorbyzaidnaeem.streamlit.app)
